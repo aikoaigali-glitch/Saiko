@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>SENSA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--t:#0ABAB5;--t2:#81D8D0;--t3:#D9F4F1;--ink:#0C2F31;--mut:#5F7B7C;--bg:#F3F7F7;--card:#fff;--line:#E1EBEB;--sh:0 10px 30px -12px rgba(10,120,118,.25);color-scheme:light;
+--f:'Manrope',system-ui,sans-serif;--d:'Sora','Manrope',system-ui,sans-serif}
+body.hc{--t:#007F7B;--ink:#001B1C;--mut:#244647;--line:#7FA3A3;--bg:#fff}
+*{box-sizing:border-box;margin:0;-webkit-tap-highlight-color:transparent}
+html{font-size:100%}html.big{font-size:114%}
+body{font-family:var(--f);color:var(--ink);background:radial-gradient(1200px 600px at 20% -10%,#CFF3EF,transparent),radial-gradient(900px 500px at 100% 100%,#E4F6F4,transparent),#EEF4F4;min-height:100%;height:100vh;display:grid;place-items:center}
+button,input,textarea,select{font:inherit;color:inherit}
+button{cursor:pointer;border:0;background:none}
+:focus-visible{outline:3px solid var(--ink);outline-offset:2px;border-radius:12px}
+.app{position:relative;width:100%;max-width:420px;height:100vh;height:100dvh;background:var(--bg);overflow:hidden;display:flex;flex-direction:column}
+@media(min-width:600px){.app{height:min(860px,94vh);border-radius:44px;box-shadow:0 40px 80px -30px rgba(8,90,90,.45),0 0 0 10px #fff,0 0 0 11px var(--line)}}
+.scr{position:absolute;inset:0 0 0 0;padding:max(env(safe-area-inset-top),22px) 20px 96px;overflow-y:auto;opacity:0;pointer-events:none;transform:translateY(14px) scale(.985);transition:opacity .35s,transform .45s cubic-bezier(.2,.8,.2,1)}
+.scr.on{opacity:1;pointer-events:auto;transform:none}
+.noscroll{overflow:hidden}
+h1,h2,h3{font-family:var(--d);letter-spacing:-.02em;line-height:1.12}
+h1{font-size:2.3rem}h2{font-size:1.55rem}h3{font-size:1.05rem}
+p.m{color:var(--mut);font-size:.92rem;line-height:1.5}
+.card{background:var(--card);border-radius:26px;padding:18px;box-shadow:var(--sh);border:1px solid var(--line)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:15px 24px;border-radius:999px;font-weight:700;background:linear-gradient(135deg,var(--t2),var(--t));color:#04292A;box-shadow:0 12px 24px -10px var(--t);transition:transform .2s}
+.btn:active{transform:scale(.96)}
+.btn.g{background:#fff;color:var(--ink);box-shadow:none;border:1px solid var(--line)}
+svg.i{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
+.logo{font-family:var(--d);font-weight:700;letter-spacing:.28em;font-size:.95rem;display:flex;align-items:center;gap:8px}
+.logo i{width:22px;height:22px;border-radius:50%;background:conic-gradient(from 200deg,var(--t),var(--t2),#fff,var(--t));display:block}
+.av{width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,var(--t2),var(--t));color:#04292A;font-weight:700;display:grid;place-items:center}
+/* Orb: signature element */
+.orb{position:relative;width:200px;height:200px;margin:0 auto;display:grid;place-items:center}
+.orb b{position:absolute;inset:0;border-radius:50%;border:1.5px solid var(--t2);opacity:.55;animation:ring 4.8s infinite}
+.orb b:nth-child(2){animation-delay:1.6s}.orb b:nth-child(3){animation-delay:3.2s}
+.orb s{width:46%;height:46%;border-radius:50%;background:radial-gradient(circle at 32% 28%,#fff,var(--t2) 38%,var(--t) 78%);box-shadow:0 20px 50px -8px var(--t),inset 0 -8px 20px rgba(0,100,100,.25);animation:br 4s ease-in-out infinite}
+.orb.sm{width:120px;height:120px}
+.orb.live s{animation:br .9s ease-in-out infinite}
+@keyframes ring{0%{transform:scale(.4);opacity:.7}100%{transform:scale(1.15);opacity:0}}
+@keyframes br{50%{transform:scale(1.14)}}
+body.rm *{animation:none!important;transition:none!important}
+/* Welcome */
+#welcome{display:flex;flex-direction:column;justify-content:space-between;padding-bottom:28px;background:linear-gradient(180deg,#DDF6F3,var(--bg) 62%)}
+.chips{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:16px 0}
+.chip{padding:14px;border-radius:20px;background:#fff;border:1.5px solid var(--line);text-align:left;font-weight:600;font-size:.88rem;display:flex;gap:10px;align-items:center;transition:.2s}
+.chip[aria-pressed=true]{border-color:var(--t);background:var(--t3)}
+.dots{display:flex;gap:6px;justify-content:center;margin:10px 0}
+.dots i{width:7px;height:7px;border-radius:9px;background:var(--line);transition:.3s}.dots i.on{width:22px;background:var(--t)}
+/* Tab bar */
+nav{position:absolute;left:14px;right:14px;bottom:max(env(safe-area-inset-bottom),14px);display:flex;justify-content:space-around;padding:8px;border-radius:30px;background:rgba(255,255,255,.82);backdrop-filter:blur(18px);border:1px solid var(--line);box-shadow:var(--sh);transform:translateY(130%);transition:transform .5s cubic-bezier(.2,.8,.2,1);z-index:5}
+nav.on{transform:none}
+nav button{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:.68rem;font-weight:600;color:var(--mut);padding:8px 10px;border-radius:20px;min-width:58px;transition:.25s}
+nav button[aria-current=page]{background:var(--t3);color:#06504F}
+/* Home */
+.hero{display:flex;flex-direction:column;align-items:center;text-align:center;gap:10px;padding:8px 0 4px}
+.talk{margin-top:-6px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:18px}
+.tile{padding:16px;border-radius:24px;background:#fff;border:1px solid var(--line);text-align:left;display:flex;flex-direction:column;gap:12px;min-height:118px;justify-content:space-between;box-shadow:var(--sh);transition:transform .2s}
+.tile:active{transform:scale(.97)}
+.ic{width:42px;height:42px;border-radius:14px;background:var(--t3);color:#067673;display:grid;place-items:center}
+.tile span{font-weight:700;font-size:.95rem}.tile small{display:block;color:var(--mut);font-weight:500;font-size:.75rem;margin-top:2px}
+.wide{grid-column:span 2;background:linear-gradient(135deg,#0B4F50,#0A7F7C);color:#fff;border:0}
+.wide .ic{background:rgba(255,255,255,.16);color:#fff}.wide small{color:#BFEAE6}
+/* Chat */
+.chat{display:flex;flex-direction:column;gap:10px;margin:16px 0 80px}
+.msg{max-width:84%;padding:12px 15px;border-radius:20px;font-size:.93rem;line-height:1.45;animation:pop .35s}
+.msg.a{background:#fff;border:1px solid var(--line);border-bottom-left-radius:6px}
+.msg.u{align-self:flex-end;background:linear-gradient(135deg,var(--t2),var(--t));color:#04292A;border-bottom-right-radius:6px;font-weight:600}
+@keyframes pop{from{opacity:0;transform:translateY(8px)}}
+.typing{display:flex;gap:4px;padding:14px}.typing i{width:7px;height:7px;border-radius:50%;background:var(--t);animation:bl 1s infinite}.typing i:nth-child(2){animation-delay:.15s}.typing i:nth-child(3){animation-delay:.3s}
+@keyframes bl{50%{opacity:.25;transform:translateY(-3px)}}
+.dock{position:absolute;left:0;right:0;bottom:92px;padding:10px 16px;background:linear-gradient(0deg,var(--bg) 70%,transparent);z-index:4}
+.row{display:flex;gap:8px;overflow-x:auto;padding-bottom:8px;scrollbar-width:none}
+.pill{white-space:nowrap;padding:8px 14px;border-radius:99px;background:#fff;border:1px solid var(--line);font-size:.8rem;font-weight:600}
+.inp{display:flex;gap:8px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:99px;padding:6px 6px 6px 18px;box-shadow:var(--sh)}
+.inp input{flex:1;border:0;outline:0;background:none;min-width:0}
+.round{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,var(--t2),var(--t));color:#04292A;flex:none}
+/* Segmented */
+.seg{display:flex;background:#E4EEEE;border-radius:99px;padding:4px;margin:14px 0}
+.seg button{flex:1;padding:10px;border-radius:99px;font-weight:700;font-size:.85rem;color:var(--mut);transition:.25s}
+.seg button[aria-selected=true]{background:#fff;color:var(--ink);box-shadow:0 4px 10px -4px rgba(0,0,0,.2)}
+.pane{display:none;animation:pop .35s}.pane.on{display:block}
+textarea{width:100%;border:0;outline:0;resize:none;background:none;font-size:1.05rem;line-height:1.5;min-height:110px}
+.wave{display:flex;gap:3px;align-items:center;height:34px}
+.wave i{flex:1;max-width:5px;background:var(--t);border-radius:4px;height:6px;transition:height .15s}
+.board{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.board button{padding:20px 10px;border-radius:22px;background:#fff;border:1px solid var(--line);font-weight:700;display:flex;flex-direction:column;align-items:center;gap:6px;font-size:.92rem;transition:.2s}
+.board button em{font-style:normal;font-size:1.7rem}
+.board button.say{background:var(--t3);border-color:var(--t)}
+/* OCR */
+.paper{position:relative;background:#FFFEF9;border-radius:18px;padding:18px;overflow:hidden;font-family:Georgia,serif;font-size:.86rem;line-height:1.75;box-shadow:0 14px 30px -14px rgba(0,0,0,.3);transform:rotate(-1.2deg)}
+.paper hr{border:0;border-top:1px dashed #cdbf9b;margin:6px 0}
+.beam{position:absolute;left:0;right:0;height:46px;top:-50px;background:linear-gradient(180deg,transparent,rgba(10,186,181,.45));border-bottom:2px solid var(--t);opacity:0}
+.scanning .beam{opacity:1;animation:sc 1.8s ease-in-out forwards}
+@keyframes sc{to{top:100%}}
+.paper mark{background:transparent;transition:background .5s}
+.done mark{background:rgba(129,216,208,.55)}
+/* Vision */
+.cam{position:relative;border-radius:30px;overflow:hidden;aspect-ratio:3/4;background:linear-gradient(180deg,#BFE9E4,#E9F6F4 55%,#CBD9D8 55%);box-shadow:var(--sh)}
+.cam svg{position:absolute;inset:0;width:100%;height:100%}
+.box{position:absolute;border:2px solid #fff;border-radius:14px;box-shadow:0 0 0 1px rgba(0,0,0,.08),0 0 24px rgba(10,186,181,.6);opacity:0;transform:scale(.92);transition:.5s cubic-bezier(.2,.8,.2,1)}
+.box.on{opacity:1;transform:none}
+.box span{position:absolute;left:-2px;top:-30px;background:#fff;border-radius:99px;padding:4px 10px;font-size:.72rem;font-weight:700;white-space:nowrap}
+.hud{position:absolute;left:12px;right:12px;top:12px;display:flex;justify-content:space-between;font-size:.72rem;font-weight:700}
+.hud span{background:rgba(255,255,255,.85);padding:6px 11px;border-radius:99px;backdrop-filter:blur(8px)}
+.narr{margin-top:14px}
+/* Captions */
+.cap{display:flex;flex-direction:column;gap:12px;min-height:300px;margin-top:14px}
+.line{animation:pop .4s}
+.line b{display:inline-block;font-size:.72rem;padding:3px 10px;border-radius:99px;background:var(--t3);color:#06504F;margin-bottom:4px}
+.line p{font-size:var(--cs,1.3rem);line-height:1.4;font-weight:600;font-family:var(--d)}
+.line.old p{opacity:.45}
+.live{display:inline-flex;align-items:center;gap:6px;font-size:.75rem;font-weight:700;color:#067673}
+.live i{width:8px;height:8px;border-radius:50%;background:#e5484d;animation:bl 1.2s infinite}
+input[type=range]{width:100%;accent-color:var(--t)}
+/* Settings */
+.set{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px 0;border-bottom:1px solid var(--line)}
+.set:last-child{border:0}.set small{display:block;color:var(--mut);font-size:.76rem}
+.sw{width:50px;height:30px;border-radius:99px;background:#CBDADA;position:relative;transition:.25s;flex:none}
+.sw::after{content:"";position:absolute;left:3px;top:3px;width:24px;height:24px;border-radius:50%;background:#fff;box-shadow:0 2px 6px rgba(0,0,0,.25);transition:.25s}
+.sw[aria-checked=true]{background:var(--t)}.sw[aria-checked=true]::after{left:23px}
+.toast{position:absolute;left:50%;top:18px;transform:translate(-50%,-80px);background:var(--ink);color:#fff;padding:10px 18px;border-radius:99px;font-size:.82rem;font-weight:600;z-index:9;transition:.4s cubic-bezier(.2,.8,.2,1);white-space:nowrap}
+.toast.on{transform:translate(-50%,0)}
+.cam video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:none}
+.cam.live video{display:block}.cam.live>svg,.cam.live .box{display:none}
+.key{width:100%;border:1px solid var(--line);border-radius:12px;padding:11px;background:#fff;margin-top:8px}
+.sp{height:14px}
+</style>
+</head>
+<body>
+<div class="app" id="app">
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<!-- Welcome -->
+<section class="scr on" id="welcome" aria-label="Welcome">
+  <div class="logo"><i></i>SENSA</div>
+  <div>
+    <div class="orb" aria-hidden="true"><b></b><b></b><b></b><s></s></div>
+    <div style="margin-top:22px" id="ob">
+      <h1 id="obT">Every sense,<br>understood.</h1>
+      <p class="m" id="obP" style="margin-top:10px">SENSA listens, sees and speaks with you, so the world meets you where you are.</p>
+    </div>
+    <div class="dots" id="dots"><i class="on"></i><i></i><i></i></div>
+  </div>
+  <div id="obBottom">
+    <div class="chips" id="modes" hidden>
+      <button class="chip" aria-pressed="false" data-m="Blind or low vision"><span class="ic" style="width:34px;height:34px;border-radius:11px"><svg class="i"><use href="#eye"/></svg></span>Blind or low vision</button>
+      <button class="chip" aria-pressed="false" data-m="Deaf or hard of hearing"><span class="ic" style="width:34px;height:34px;border-radius:11px"><svg class="i"><use href="#cc"/></svg></span>Deaf or hard of hearing</button>
+      <button class="chip" aria-pressed="false" data-m="Speech difficulties"><span class="ic" style="width:34px;height:34px;border-radius:11px"><svg class="i"><use href="#spk"/></svg></span>Speech difficulties</button>
+      <button class="chip" aria-pressed="false" data-m="Something else"><span class="ic" style="width:34px;height:34px;border-radius:11px"><svg class="i"><use href="#set"/></svg></span>Something else</button>
+    </div>
+    <button class="btn" style="width:100%" id="next">Continue</button>
+  </div>
+</section>
+
+<!-- Home -->
+<section class="scr" id="home" aria-label="Home">
+  <div class="top"><div class="logo"><i></i>SENSA</div><button class="av" data-go="settings" aria-label="Profile and settings">AM</button></div>
+  <div class="hero">
+    <p class="m" id="hi">Good morning, Amara</p>
+    <h2>How can I help<br>right now?</h2>
+    <button class="orb talk" id="talk" aria-label="Tap to talk to SENSA"><b></b><b></b><b></b><s></s></button>
+    <p class="m" id="talkT">Tap the orb and just ask</p>
+  </div>
+  <div class="grid">
+    <button class="tile" data-go="vision"><div class="ic"><svg class="i"><use href="#eye"/></svg></div><div><span>AI Vision</span><small>Describe what’s around</small></div></button>
+    <button class="tile" data-go="captions"><div class="ic"><svg class="i"><use href="#cc"/></svg></div><div><span>Live Captions</span><small>Speech to text, instantly</small></div></button>
+    <button class="tile" data-go="tools" data-tab="0"><div class="ic"><svg class="i"><use href="#spk"/></svg></div><div><span>Speak</span><small>Type, then be heard</small></div></button>
+    <button class="tile" data-go="tools" data-tab="1"><div class="ic"><svg class="i"><use href="#scan"/></svg></div><div><span>Scan text</span><small>Read signs and papers</small></div></button>
+    <button class="tile wide" data-go="assistant"><div class="ic"><svg class="i"><use href="#chat"/></svg></div><div><span>Today with SENSA</span><small>Bus 42 arrives in 6 min · Pharmacy closes at 6 pm</small></div></button>
+  </div>
+</section>
+
+<!-- Assistant -->
+<section class="scr" id="assistant" aria-label="AI Assistant">
+  <div class="top"><h2>Assistant</h2><div class="orb sm" style="width:46px;height:46px;margin:0"><s style="width:70%;height:70%;animation-duration:3s"></s></div></div>
+  <div class="chat" id="chat" aria-live="polite"></div>
+  <div class="dock">
+    <div class="row" id="sug"><button class="pill">What’s ahead of me?</button><button class="pill">Read my last scan</button><button class="pill">Plan my route home</button><button class="pill">Say thanks for me</button></div>
+    <form class="inp" id="chatF"><input id="chatI" placeholder="Ask SENSA anything" aria-label="Message SENSA"><button type="button" class="round" style="background:var(--t3)" aria-label="Voice input" id="mic"><svg class="i"><use href="#mic"/></svg></button><button class="round" aria-label="Send"><svg class="i"><use href="#send"/></svg></button></form>
+  </div>
+</section>
+
+<!-- Tools -->
+<section class="scr" id="tools" aria-label="Accessibility tools">
+  <div class="top"><h2>Tools</h2></div>
+  <div class="seg" role="tablist" id="seg">
+    <button role="tab" aria-selected="true">Speak</button><button role="tab" aria-selected="false">Scan</button><button role="tab" aria-selected="false">Phrases</button>
+  </div>
+  <div class="pane on">
+    <div class="card">
+      <textarea id="tts" aria-label="Text to speak">Hi, I’d like a flat white with oat milk, please.</textarea>
+      <div class="wave" id="wave" aria-hidden="true"></div>
+      <div style="display:flex;gap:10px;margin-top:12px"><button class="btn" id="speak" style="flex:1"><svg class="i"><use href="#spk"/></svg>Speak aloud</button><button class="btn g" id="clr" aria-label="Clear">Clear</button></div>
+    </div>
+    <div class="row" style="margin-top:14px"><button class="pill" data-t="Could you repeat that, please?">Repeat, please</button><button class="pill" data-t="I’m using SENSA to communicate. Thank you for your patience.">Introduce me</button><button class="pill" data-t="Where is the nearest exit?">Nearest exit</button></div>
+  </div>
+  <div class="pane">
+    <div class="paper" id="paper"><div class="beam"></div>
+      <b>CASA VERDE · LUNCH</b><hr>
+      <mark>Soup of the day</mark> — 6.50<br><mark>Wild mushroom risotto</mark> — 13.00<br><mark>Grilled sea bass</mark> — 17.50<hr>
+      <mark>Contains nuts and dairy.</mark>
+    </div>
+    <div style="display:flex;gap:10px;margin-top:20px"><button class="btn" id="scanB" style="flex:1"><svg class="i"><use href="#scan"/></svg>Scan page</button><button class="btn g" id="readB">Read aloud</button></div>
+    <p class="m" id="ocrR" style="margin-top:14px"></p>
+  </div>
+  <div class="pane">
+    <p class="m" style="margin-bottom:12px">Tap a tile and SENSA says it for you.</p>
+    <div class="board" id="board">
+      <button data-t="Yes"><em>👍</em>Yes</button><button data-t="No, thank you"><em>✋</em>No</button>
+      <button data-t="I need help, please"><em>🆘</em>Help</button><button data-t="Please speak slowly"><em>🐢</em>Slower</button>
+      <button data-t="I need water"><em>💧</em>Water</button><button data-t="Thank you"><em>💚</em>Thanks</button>
+    </div>
+  </div>
+</section>
+
+<!-- Vision -->
+<section class="scr" id="vision" aria-label="AI Vision">
+  <div class="top"><h2>Vision</h2><span class="live"><i></i>Camera on</span></div>
+  <div class="cam" id="cam"><video id="vid" autoplay playsinline muted></video>
+    <svg viewBox="0 0 300 400" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+      <rect x="0" y="220" width="300" height="180" fill="#C8D8D6"/><rect x="20" y="236" width="260" height="22" rx="8" fill="#9DB7B4"/>
+      <rect x="40" y="110" width="110" height="74" rx="8" fill="#2A4B4C"/><rect x="48" y="118" width="94" height="58" rx="4" fill="#81D8D0"/><path d="M30 190h130l12 30H18z" fill="#456B6B"/>
+      <path d="M205 168h46l-5 52h-36z" fill="#fff" stroke="#0ABAB5" stroke-width="3"/><path d="M251 182q22 6 0 26" fill="none" stroke="#0ABAB5" stroke-width="4"/>
+      <path d="M72 310q-16-40 10-62 6 34-10 62zM84 310q18-36 40-40-14 30-40 40z" fill="#5FB8A8"/><rect x="62" y="306" width="36" height="42" rx="8" fill="#E8D9C6"/>
+    </svg>
+    <div class="hud"><span>AI Vision</span><span id="conf">Ready</span></div>
+    <div class="box" style="left:12%;top:24%;width:46%;height:26%"><span>Laptop · 98%</span></div>
+    <div class="box" style="left:67%;top:41%;width:20%;height:14%"><span>Cup · 94%</span></div>
+    <div class="box" style="left:19%;top:75%;width:20%;height:14%"><span>Plant · 91%</span></div>
+  </div>
+  <div class="card narr"><p id="narr" class="m" style="color:var(--ink);font-size:1rem">Point the camera anywhere and tap Describe.</p></div>
+  <div style="display:flex;gap:10px;margin-top:14px"><button class="btn" id="descB" style="flex:1"><svg class="i"><use href="#eye"/></svg>Describe scene</button><button class="btn g" id="camB">Camera</button><button class="btn g" id="readV" aria-label="Read description aloud"><svg class="i"><use href="#spk"/></svg></button></div>
+</section>
+
+<!-- Captions -->
+<section class="scr" id="captions" aria-label="Live captions">
+  <div class="top"><h2>Captions</h2><span class="live"><i></i><span id="capS">Listening</span></span></div>
+  <div class="card" style="padding:14px 18px"><div class="wave" id="wave2" aria-hidden="true"></div></div>
+  <div class="cap" id="cap" aria-live="off"></div>
+  <div class="card" style="margin-top:12px">
+    <div class="set" style="padding-top:0"><div>Text size<small>Captions grow instantly</small></div></div>
+    <input type="range" min="1" max="2.2" step=".1" value="1.3" id="cs" aria-label="Caption text size">
+    <div style="display:flex;gap:10px;margin-top:14px"><button class="btn" id="pause" style="flex:1">Pause</button><button class="btn g" id="save">Save transcript</button></div>
+  </div>
+</section>
+
+<!-- Settings -->
+<section class="scr" id="settings" aria-label="Settings and profile">
+  <div class="top"><h2>Profile</h2></div>
+  <div class="card" style="display:flex;gap:14px;align-items:center"><div class="av" style="width:60px;height:60px;font-size:1.2rem">AM</div><div><h3>Amara Mensah</h3><p class="m" id="modeL">Blind or low vision</p></div></div>
+  <div class="card" style="margin-top:14px;padding:4px 18px">
+    <div class="set"><div>High contrast<small>Stronger colors and borders</small></div><button class="sw" role="switch" aria-checked="false" aria-label="High contrast" data-k="hc"></button></div>
+    <div class="set"><div>Larger text<small>Scale everything up 14%</small></div><button class="sw" role="switch" aria-checked="false" aria-label="Larger text" data-k="big"></button></div>
+    <div class="set"><div>Reduce motion<small>Calmer animations</small></div><button class="sw" role="switch" aria-checked="false" aria-label="Reduce motion" data-k="rm"></button></div>
+    <div class="set"><div>Speak AI replies<small>Read answers out loud automatically</small></div><button class="sw" role="switch" aria-checked="true" aria-label="Speak AI replies" data-k="ar"></button></div>
+    <div class="set"><div>Spoken buttons<small>Hear each button’s name when you tap it</small></div><button class="sw" role="switch" aria-checked="true" aria-label="Spoken buttons" data-k="vo"></button></div>
+    <div class="set"><div>Haptic feedback<small>Gentle vibration cues</small></div><button class="sw" role="switch" aria-checked="true" aria-label="Haptics" data-k="hap"></button></div>
+  </div>
+  <div class="card" style="margin-top:14px">
+    <div class="set" style="padding-top:0"><div>Voice speed<small id="vsL">Normal</small></div></div>
+    <input type="range" min=".6" max="1.6" step=".1" value="1" id="vs" aria-label="Voice speed">
+    <div class="set" style="margin-top:8px"><div>Language</div><select id="lang" style="border:1px solid var(--line);border-radius:12px;padding:8px;background:#fff"><option>English</option><option>Español</option><option>Français</option><option>Deutsch</option><option>Русский</option></select></div>
+  </div>
+  <div class="card" style="margin-top:14px"><h3>AI connection</h3><p class="m" style="margin-top:6px">Paste your Anthropic API key to turn on real AI answers and image understanding. It stays in this browser.</p><input class="key" id="apiKey" type="password" placeholder="sk-ant-…" autocomplete="off" aria-label="API key"><input class="key" id="apiModel" value="claude-sonnet-5-5" aria-label="AI model"><button class="btn" id="saveKey" style="width:100%;margin-top:10px">Save AI settings</button><p class="m" id="aiS" style="margin-top:8px"></p></div>
+  <button class="btn g" style="width:100%;margin-top:14px" id="again">Replay welcome</button>
+</section>
+
+<input type="file" id="file" accept="image/*" capture="environment" hidden>
+<nav id="nav" aria-label="Main">
+  <button data-go="home" aria-current="page"><svg class="i"><use href="#home"/></svg>Home</button>
+  <button data-go="assistant"><svg class="i"><use href="#chat"/></svg>Assistant</button>
+  <button data-go="vision"><svg class="i"><use href="#eye"/></svg>Vision</button>
+  <button data-go="captions"><svg class="i"><use href="#cc"/></svg>Captions</button>
+  <button data-go="tools"><svg class="i"><use href="#tool"/></svg>Tools</button>
+</nav>
+</div>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+<symbol id="home" viewBox="0 0 24 24"><path d="M3 11l9-8 9 8M5 10v10h14V10"/></symbol>
+<symbol id="chat" viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z"/></symbol>
+<symbol id="eye" viewBox="0 0 24 24"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></symbol>
+<symbol id="cc" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M10 10.5a2 2 0 100 3M16 10.5a2 2 0 100 3"/></symbol>
+<symbol id="tool" viewBox="0 0 24 24"><rect x="4" y="4" width="7" height="7" rx="2"/><rect x="13" y="4" width="7" height="7" rx="2"/><rect x="4" y="13" width="7" height="7" rx="2"/><rect x="13" y="13" width="7" height="7" rx="2"/></symbol>
+<symbol id="spk" viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9zM17 9a4 4 0 010 6M19.5 6.5a8 8 0 010 11"/></symbol>
+<symbol id="scan" viewBox="0 0 24 24"><path d="M4 8V5a1 1 0 011-1h3M16 4h3a1 1 0 011 1v3M20 16v3a1 1 0 01-1 1h-3M8 20H5a1 1 0 01-1-1v-3M7 12h10"/></symbol>
+<symbol id="set" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M18.4 5.6l-2.1 2.1M7.7 16.3l-2.1 2.1"/></symbol>
+<symbol id="mic" viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0014 0M12 18v3"/></symbol>
+<symbol id="send" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+</svg>
+
+<script>
+const $=(s,r=document)=>r.querySelector(s),$$=(s,r=document)=>[...r.querySelectorAll(s)];
+let vSpeed=1,toastT;
+const toast=m=>{const t=$('#toast');t.textContent=m;t.classList.add('on');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('on'),2200)};
+const buzz=()=>{if($('[data-k=hap]').getAttribute('aria-checked')==='true'&&navigator.vibrate)navigator.vibrate(12)};
+
+/* Navigation */
+function go(id,tab){
+  $$('.scr').forEach(s=>s.classList.toggle('on',s.id===id));
+  $('#nav').classList.toggle('on',id!=='welcome');
+  $$('#nav button').forEach(b=>b.toggleAttribute('aria-current',b.dataset.go===id)||0);
+  $$('#nav button').forEach(b=>b.dataset.go===id?b.setAttribute('aria-current','page'):b.removeAttribute('aria-current'));
+  $('#'+id).scrollTop=0;buzz();
+  if(tab!==undefined)setTab(+tab);
+  id==='captions'?startCaps():stopCaps();
+  if(id!=='vision')stopCam();
+}
+document.addEventListener('click',e=>{const b=e.target.closest('[data-go]');if(b)go(b.dataset.go,b.dataset.tab)});
+
+/* Onboarding */
+const slides=[["Every sense,<br>understood.","SENSA listens, sees and speaks with you, so the world meets you where you are."],["See, hear and<br>say it all.","Describe your surroundings, caption conversations and speak with a tap."],["Made around<br>you.","Tell us how you use SENSA. You can change this any time."]];
+let step=0,mode='Blind or low vision';
+$('#next').onclick=()=>{
+  if(step<2){step++;$('#obT').innerHTML=slides[step][0];$('#obP').textContent=slides[step][1];
+    $$('#dots i').forEach((d,i)=>d.classList.toggle('on',i===step));
+    if(step===2){$('#modes').hidden=false;$('#next').textContent='Start with SENSA'}}
+  else{$('#modeL').textContent=mode;go('home')}
+};
+$$('.chip').forEach(c=>c.onclick=()=>{$$('.chip').forEach(x=>x.setAttribute('aria-pressed',x===c));mode=c.dataset.m});
+$('#again').onclick=()=>{step=0;$('#obT').innerHTML=slides[0][0];$('#obP').textContent=slides[0][1];$('#modes').hidden=true;$('#next').textContent='Continue';$$('#dots i').forEach((d,i)=>d.classList.toggle('on',!i));go('welcome')};
+
+/* Speech helper */
+const LANGS={English:'en-US',Español:'es-ES',Français:'fr-FR',Deutsch:'de-DE',Русский:'ru-RU'};
+const lc=()=>LANGS[$('#lang').value]||'en-US';
+function say(t){
+  if('speechSynthesis' in window){speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.rate=vSpeed;u.lang=lc();const v=speechSynthesis.getVoices().find(v=>v.lang.toLowerCase().startsWith(lc().slice(0,2)));if(v)u.voice=v;speechSynthesis.speak(u)}
+  else toast('Speaking: '+t.slice(0,28)+'…');
+}
+/* Speak every button */
+const voiceOn=()=>$('[data-k=vo]').getAttribute('aria-checked')==='true';
+const label=b=>(b.getAttribute('aria-label')||b.textContent).replace(/\s+/g,' ').trim();
+document.addEventListener('click',e=>{
+  const b=e.target.closest('button,[role=tab]');
+  if(!b||!voiceOn()||b.matches('.sw,#speak,#readB,#readV,#board button,#talk,#mic'))return;
+  say(label(b));
+},true);
+
+/* Waveforms */
+function wave(el,n=34){el.innerHTML='<i></i>'.repeat(n)}
+wave($('#wave'));wave($('#wave2'),44);
+let waveTimers={};
+function animWave(el,on){
+  clearInterval(waveTimers[el.id]);const bars=$$('i',el);
+  if(!on){bars.forEach(b=>b.style.height='6px');return}
+  waveTimers[el.id]=setInterval(()=>bars.forEach((b,i)=>b.style.height=(6+Math.abs(Math.sin(Date.now()/260+i*.5))*Math.random()*28)+'px'),110);
+}
+
+/* Speech recognition (speech to text) */
+const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+function listen(onText,onEnd,live){
+  if(!SR){toast('Speech recognition isn’t supported in this browser');return null}
+  const r=new SR();let bad=false;r.lang=lc();r.interimResults=!!live;r.continuous=!!live;
+  r.onresult=e=>{let t='',fin=false;for(let i=e.resultIndex;i<e.results.length;i++){t+=e.results[i][0].transcript;if(e.results[i].isFinal)fin=true}onText(t.trim(),fin)};
+  r.onerror=e=>{bad=true;toast(e.error==='not-allowed'?'Allow microphone access to talk':'Microphone: '+e.error)};
+  r.onend=()=>onEnd&&onEnd(bad);
+  try{r.start()}catch(_){}
+  return r;
+}
+
+/* AI connection (Anthropic API, called straight from the browser) */
+let memKey='',memModel='claude-sonnet-5-5';
+try{memKey=localStorage.getItem('sensa_key')||'';memModel=localStorage.getItem('sensa_model')||memModel}catch(_){}
+const aiKey=()=>memKey,aiModel=()=>memModel;
+const SYS=()=>'You are SENSA, a calm, friendly accessibility assistant for blind, deaf and speech-impaired people. Answer in 1 to 3 short, plain sentences. No markdown, no emojis. Reply in '+$('#lang').value+' unless the user writes in another language.';
+async function ai(messages,sys,maxTok=400){
+  const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'content-type':'application/json','x-api-key':aiKey(),'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:aiModel(),max_tokens:maxTok,system:sys||SYS(),messages})});
+  const d=await r.json();if(!r.ok)throw new Error(d.error&&d.error.message||r.status);
+  return d.content.filter(c=>c.type==='text').map(c=>c.text).join(' ').trim();
+}
+
+/* Home talk */
+let talking=false,rec=null;
+const talkOff=()=>{talking=false;$('#talk').classList.remove('live');$('#talkT').textContent='Tap the orb and just ask'};
+$('#talk').onclick=()=>{
+  buzz();
+  if(talking){rec&&rec.stop();return}
+  talking=true;$('#talk').classList.add('live');$('#talkT').textContent='Listening…';
+  if(!SR){setTimeout(()=>{talkOff();go('assistant');send('Is the pharmacy still open?','Yes. Greenleaf Pharmacy is open until 6 pm, about 4 minutes on foot. Want directions?')},1800);return}
+  let got='';
+  rec=listen(t=>{got=t},()=>{talkOff();if(got){go('assistant');send(got)}});
+  if(!rec)talkOff();
+};
+$('#hi').textContent=(h=>h<12?'Good morning':h<18?'Good afternoon':'Good evening')(new Date().getHours())+', Amara';
+
+/* Assistant */
+const replies=[
+ "Right ahead: a clear path for about 8 meters, then a doorway on your left.",
+ "Your last scan was a lunch menu. Three dishes, from 6.50 to 17.50. It notes nuts and dairy.",
+ "Take bus 42 from the stop on Elm Street. It arrives in 6 minutes and the ride is about 14 minutes.",
+ "Done. I said “Thank you, I appreciate your help” out loud for you."];
+const chat=$('#chat');let hist=[];
+const speakAI=t=>{if($('[data-k=ar]').getAttribute('aria-checked')==='true')say(t)};
+function addMsg(w,t){const d=document.createElement('div');d.className='msg '+w;d.textContent=t;chat.appendChild(d);$('#assistant').scrollTo({top:9999,behavior:'smooth'});return d}
+function typing(){const ty=document.createElement('div');ty.className='msg a typing';ty.innerHTML='<i></i><i></i><i></i>';chat.appendChild(ty);return ty}
+function reply(t){const ty=typing();setTimeout(()=>{ty.remove();addMsg('a',t);speakAI(t)},1100)}
+async function send(text,canned){
+  addMsg('u',text);
+  if(!aiKey()){reply(canned||'Demo mode. Add your API key in Profile to get real AI answers.');return}
+  const ty=typing();hist.push({role:'user',content:text});
+  try{const a=await ai(hist.slice(-12));hist.push({role:'assistant',content:a});ty.remove();addMsg('a',a);speakAI(a)}
+  catch(e){ty.remove();hist.pop();addMsg('a','AI error: '+e.message)}
+}
+addMsg('a','Hello Amara. I’m here whenever you need me. You can ask me to describe what’s around you, read something, or help you say something.');
+$$('#sug .pill').forEach((p,i)=>p.onclick=()=>send(p.textContent,replies[i]));
+$('#chatF').onsubmit=e=>{e.preventDefault();const v=$('#chatI').value.trim();if(!v)return;$('#chatI').value='';send(v,'Got it. This is demo mode. Add your API key in Profile and SENSA will answer for real.')};
+$('#mic').onclick=()=>{
+  if(!SR){setTimeout(()=>send('What time is it?','It’s '+new Date().toLocaleTimeString([],{hour:'numeric',minute:'2-digit'})+'.'),900);return}
+  toast('Listening…');let got='';listen(t=>{got=t},()=>{if(got)send(got)});
+};
+
+/* Tools */
+function setTab(i){$$('#seg button').forEach((b,j)=>b.setAttribute('aria-selected',i===j));$$('#tools .pane').forEach((p,j)=>p.classList.toggle('on',i===j))}
+$$('#seg button').forEach((b,i)=>b.onclick=()=>setTab(i));
+$('#speak').onclick=()=>{const t=$('#tts').value.trim();if(!t)return toast('Type something to speak');say(t);animWave($('#wave'),true);setTimeout(()=>animWave($('#wave'),false),Math.min(1800+t.length*60,7000))};
+$('#clr').onclick=()=>{$('#tts').value='';$('#tts').focus()};
+$$('#tools .row .pill').forEach(p=>p.onclick=()=>{$('#tts').value=p.dataset.t});
+$$('#board button').forEach(b=>b.onclick=()=>{$$('#board button').forEach(x=>x.classList.remove('say'));b.classList.add('say');say(b.dataset.t);buzz()});
+let ocrText='Casa Verde lunch. Soup of the day, 6 pounds 50. Wild mushroom risotto, 13 pounds. Grilled sea bass, 17 pounds 50. Contains nuts and dairy.';
+async function ocrImage(b64){
+  const p=$('#paper');p.classList.remove('scanning','done');void p.offsetWidth;p.classList.add('scanning');$('#ocrR').textContent='Scanning…';
+  try{const t=await ai([{role:'user',content:[img(b64),{type:'text',text:'Read all the text in this image exactly, in reading order. If there is no text, say so briefly.'}]}],'You are an OCR engine for a blind user. Output only the text, with no commentary.',1200);
+    ocrText=t;$('#ocrR').textContent=t;say(t)}
+  catch(e){$('#ocrR').textContent='Scan failed: '+e.message}
+  p.classList.remove('scanning');
+}
+$('#scanB').onclick=()=>{
+  if(aiKey()){$('#file').click();return}
+  const p=$('#paper');p.classList.remove('scanning','done');void p.offsetWidth;p.classList.add('scanning');$('#ocrR').textContent='Demo scan… add your API key in Profile to scan real pages.';
+  setTimeout(()=>{p.classList.add('done');$('#ocrR').textContent='Found 3 dishes and an allergen note. Tap Read aloud.'},1800)};
+$('#file').onchange=async e=>{const f=e.target.files[0];if(f)ocrImage(await fileB64(f));e.target.value=''};
+$('#readB').onclick=()=>say(ocrText);
+
+/* Vision: real camera + AI */
+function toB64(src,w,h){const c=document.createElement('canvas'),k=Math.min(1,1280/Math.max(w,h));c.width=Math.round(w*k);c.height=Math.round(h*k);c.getContext('2d').drawImage(src,0,0,c.width,c.height);return c.toDataURL('image/jpeg',.8).split(',')[1]}
+const fileB64=f=>new Promise((res,rej)=>{const im=new Image();im.onload=()=>res(toB64(im,im.width,im.height));im.onerror=rej;im.src=URL.createObjectURL(f)});
+const img=b=>({type:'image',source:{type:'base64',media_type:'image/jpeg',data:b}});
+const boxes=$$('#cam .box'),vid=$('#vid');let vT=[],stream=null,facing='environment';
+async function startCam(){
+  if(!(navigator.mediaDevices&&navigator.mediaDevices.getUserMedia)){toast('Camera isn’t available here. The page must use HTTPS.');return false}
+  try{stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:facing},audio:false});vid.srcObject=stream;$('#cam').classList.add('live');$('#camB').textContent='Flip';$('#conf').textContent='Live';return true}
+  catch(e){toast('Allow camera access to use AI Vision');return false}
+}
+function stopCam(){if(stream)stream.getTracks().forEach(t=>t.stop());stream=null;vid.srcObject=null;$('#cam').classList.remove('live');$('#camB').textContent='Camera';$('#conf').textContent='Ready'}
+$('#camB').onclick=async()=>{if(stream){facing=facing==='environment'?'user':'environment';stream.getTracks().forEach(t=>t.stop());await startCam()}else await startCam()};
+$('#descB').onclick=async()=>{
+  vT.forEach(clearTimeout);vT=[];boxes.forEach(b=>b.classList.remove('on'));$('#narr').textContent='';
+  if(stream){
+    if(!aiKey()){const m='The camera is on. Add your API key in Profile so SENSA can describe what it sees.';$('#narr').textContent=m;say(m);return}
+    $('#conf').textContent='Analyzing…';$('#narr').textContent='Looking…';
+    try{const t=await ai([{role:'user',content:[img(toB64(vid,vid.videoWidth,vid.videoHeight)),{type:'text',text:'Describe what is in front of me for a blind person: the key objects, where they are, and any hazards. Be brief.'}]}],SYS(),350);$('#narr').textContent=t;say(t)}
+    catch(e){$('#narr').textContent='AI error: '+e.message}
+    $('#conf').textContent='Live';return;
+  }
+  $('#conf').textContent='Analyzing…';
+  boxes.forEach((b,i)=>vT.push(setTimeout(()=>b.classList.add('on'),500+i*600)));
+  const txt='You’re facing a desk with an open laptop on the left, a white cup on the right and a small potted plant in front. Nothing blocks your way. (Demo scene. Tap Camera for the real view.)';
+  vT.push(setTimeout(()=>{$('#conf').textContent='3 objects';let i=0;const iv=setInterval(()=>{$('#narr').textContent=txt.slice(0,++i);if(i>=txt.length)clearInterval(iv)},22)},2400));
+};
+$('#readV').onclick=()=>say($('#narr').textContent);
+
+/* Captions: real speech to text, demo script as fallback */
+const script=[["Maya","Hi Amara, the meeting room has moved to the second floor."],["Daniel","I can bring the printed handouts if that helps."],["Maya","Great. We’ll start in about five minutes, so grab a coffee first."],["Daniel","Do you want the slides shared with you in large text?"]];
+let capT,capPause=false,idx=0,capRec=null,capLive=false,tr=[];
+function newLine(who){const cap=$('#cap');$$('.line',cap).forEach(l=>l.classList.add('old'));const l=document.createElement('div');l.className='line';l.innerHTML='<b></b><p></p>';$('b',l).textContent=who;cap.appendChild(l);while(cap.children.length>3)cap.firstChild.remove();return $('p',l)}
+function runCap(){
+  let cur=null;
+  capRec=listen((t,f)=>{if(capPause)return;if(!cur)cur=newLine('Speaker');cur.textContent=t;if(f){tr.push('Speaker: '+t);cur=null}},bad=>{
+    if(bad){capLive=false;toast('Using demo captions');demoCaps();return}
+    if(capLive&&!capPause)setTimeout(runCap,200)},true);
+}
+function demoCaps(){
+  const next=()=>{
+    if(capPause)return;
+    const [who,txt]=script[idx++%script.length];const p=newLine(who);
+    const w=txt.split(' ');let n=0;
+    capT=setInterval(()=>{if(capPause)return;p.textContent=w.slice(0,++n).join(' ');if(n>=w.length){clearInterval(capT);tr.push(who+': '+txt);capT=setTimeout(next,1400)}},230);
+  };next();
+}
+function startCaps(){
+  stopCaps();animWave($('#wave2'),true);$('#capS').textContent='Listening';
+  if(SR){capLive=true;runCap()}else demoCaps();
+}
+function stopCaps(){capLive=false;if(capRec){try{capRec.stop()}catch(_){}capRec=null}clearInterval(capT);clearTimeout(capT);animWave($('#wave2'),false);$('#cap').innerHTML='';capPause=false;$('#pause').textContent='Pause'}
+$('#pause').onclick=()=>{capPause=!capPause;$('#pause').textContent=capPause?'Resume':'Pause';$('#capS').textContent=capPause?'Paused':'Listening';animWave($('#wave2'),!capPause);
+  if(capPause){if(capRec)try{capRec.stop()}catch(_){}}else if(capLive)runCap();else demoCaps()};
+$('#cs').oninput=e=>document.documentElement.style.setProperty('--cs',e.target.value+'rem');
+$('#save').onclick=()=>{
+  if(!tr.length)return toast('Nothing to save yet');
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([tr.join('\n')],{type:'text/plain'}));a.download='sensa-transcript.txt';a.click();toast('Transcript saved');
+};
+
+/* Settings */
+$$('.sw').forEach(s=>s.onclick=()=>{
+  const on=s.getAttribute('aria-checked')!=='true';s.setAttribute('aria-checked',on);
+  const k=s.dataset.k;if(k==='hc')document.body.classList.toggle('hc',on);if(k==='rm')document.body.classList.toggle('rm',on);if(k==='big')document.documentElement.classList.toggle('big',on);
+  const msg=s.getAttribute('aria-label')+(on?' on':' off');toast(msg);if(voiceOn()||k==='vo')say(msg);
+});
+$('#vs').oninput=e=>{vSpeed=+e.target.value;$('#vsL').textContent=vSpeed<.9?'Slow':vSpeed>1.2?'Fast':'Normal'};
+$('#lang').onchange=e=>{toast('Language set to '+e.target.value);say(e.target.value)};
+(()=>{const m={ru:'Русский',es:'Español',fr:'Français',de:'Deutsch'},l=(navigator.language||'en').slice(0,2);if(m[l])$('#lang').value=m[l]})();
+$('#apiKey').value=memKey;$('#apiModel').value=memModel;
+const aiStatus=()=>$('#aiS').textContent=aiKey()?'AI is on. Assistant, Vision and Scan use real AI.':'AI is off. SENSA runs in demo mode.';
+$('#saveKey').onclick=()=>{
+  memKey=$('#apiKey').value.trim();memModel=$('#apiModel').value.trim()||'claude-sonnet-5-5';
+  try{localStorage.setItem('sensa_key',memKey);localStorage.setItem('sensa_model',memModel)}catch(_){}
+  aiStatus();toast('AI settings saved');
+};
+aiStatus();
+</script>
+</body>
+</html>
